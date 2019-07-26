@@ -1,3 +1,5 @@
+USE dborisov;
+
 DROP TABLE IF EXISTS announcement_lst;
 
 CREATE TABLE announcement_lst(
@@ -14,10 +16,12 @@ CREATE TABLE announcement_lst(
     price double,
     pricetype string,
     status int,
-    dateinserted timestamp,
-    ptn_dadd date
+    dateinserted timestamp
 )
 PARTITIONED BY (ptn_dadd date)
-STORED AS ORC AS
-SELECT announcementid, lat, lng, description, address, floornumber, floorscount, category, roomscount, totalarea, price, pricetype, status, dateinserted, TO_DATE('2019-07-01') AS ptn_dadd
+STORED AS ORC;
+
+INSERT OVERWRITE TABLE announcement_lst
+PARTITION (ptn_dadd='2019-07-01')
+SELECT *
 FROM prod.announcement_lst;
