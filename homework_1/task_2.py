@@ -25,9 +25,13 @@ def get_message():
 
 if __name__ == '__main__':
     p = Producer({'bootstrap.servers': '10.156.0.3:6667,10.156.0.4:6667,10.156.0.5:6667'})
-    while True:
-        key, value = get_message()
-        p.poll(0)
-        p.produce(topic=OUTPUT_TOPIC, key=key, value=value)
+    try:
+        while True:
+            key, value = get_message()
+            p.produce(topic=OUTPUT_TOPIC, key=key, value=value)
+            p.poll(timeout=0)
+            time.sleep(random.randrange(5))
+    except:
+        pass
+    finally:
         p.flush()
-        time.sleep(random.randrange(5))
